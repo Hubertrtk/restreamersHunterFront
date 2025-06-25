@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AllGroups from '../components/AllGroups.vue'
+import Monitor from '../components/Monitor.vue'
 
 const routes = [
   {
@@ -11,7 +12,13 @@ const routes = [
   {
     path: '/',
     redirect: '/allGroups/found'   // 👈 możesz ustawić domyślną grupę
-  }
+  },
+  {
+    path: '/monitor/:monitorType',   
+    name: 'MonitorView',
+    component: Monitor,
+    props: true                     
+  },
 ]
 
 const router = createRouter({

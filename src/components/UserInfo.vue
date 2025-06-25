@@ -2,7 +2,7 @@
 	<div class="overlay" @click.self="close">
 	  <div class="modal">
 		<h3>Informacje o użytkowniku {{ popupStore.userPopup }}</h3>
-		<textarea readonly rows="10" cols="50" :value="formattedUser" />
+		<textarea class="userInfoTextArea" readonly rows="10" cols="50" :value="formattedUser" />
 		<button @click="close">Zamknij</button>
 	  </div>
 	</div>
@@ -48,7 +48,7 @@
 	width: 90%;
 	box-shadow: 0 2px 10px rgba(0,0,0,0.3);
   }
-  textarea {
+  .userInfoTextArea {
 	width: 100%;
 	height: 500px;
 	font-family: monospace;

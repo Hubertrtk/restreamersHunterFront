@@ -3,7 +3,12 @@ import { defineStore } from 'pinia'
 
 export const useGroupStore = defineStore('user', {
   state: () => ({
-    groups: {}
+    groups: {
+		FOUND: [],
+		BLOCKED: [],
+		IGONRED: [],
+	},
+	didChange: false,
   }),
   actions: {
     async getGroup(GROUP) {
@@ -18,6 +23,9 @@ export const useGroupStore = defineStore('user', {
     async updateGroup(GROUP) {
 	  const data = await getGroup(GROUP)
       this.groups[GROUP] = data
-    }
+    },
+	change() {
+		this.didChange = !this.didChange
+	}
   }
 })

@@ -1,11 +1,11 @@
 <template>
 	<div>
-	  <h2>Grupa: {{ groupName }}</h2>
-  
+	  <h2>Monitor: {{ monitorType }}</h2>
+	  <button @click="handleRunMonitor">RUN</button>
 	  <div class="monitor-group-container">
 		<div 
 		  class="monitor-group" 
-		  v-for="(items, type) in monitorTypes" 
+		  v-for="(items, type) in monitorGroups" 
 		  :key="type"
 		>
 		  <h3>{{ type }}</h3>
@@ -33,31 +33,38 @@
   
   <script setup>
   import { ref, onMounted, watch } from 'vue'
-  import { useGroupStore } from '../stores/groupStore'
+  import { useMonitorStore } from '../stores/monitorStore'
   import { usePopupStore } from '../stores/popupStore'
   import { useRoute } from 'vue-router'
+  import { runMonitor } from '../api/serviceApi'
   
-  const groupStore = useGroupStore()
-  const popupStore = usePopupStore()
-  const monitorTypes = ref({})
-  const checkedItems = ref(new Set()) // ✅ przechowuje zaznaczenia
-  const route = useRoute()
-  const groupName = ref(route.params.groupName)
 
-  watch(() => groupStore.didChange, (newVal, oldVal) => {
+  const popupStore = usePopupStore()
+  const monitorStore = useMonitorStore()
+  const monitorGroups = ref({})
+  const checkedItems = ref(new Set()) 
+  const route = useRoute()
+  const monitorType = ref(route.params.monitorType)
+
+  watch(() => monitorStore.didChange, (newVal, oldVal) => {
   	saveUrl()
-	console.log("change");
-}, { deep: true })
+  }, { deep: true })
   
   async function saveUrl() {
-	const data = await groupStore.getGroup(groupName.value.toUpperCase())
+	const data = await monitorStore.getMonitor(monitorType.value.toUpperCase())
 	if (data && data.length > 0) {
-	  monitorTypes.value = data
+	  monitorGroups.value = data
 	} else {
-	  await groupStore.updateGroup(groupName.value.toUpperCase())
-	  const data = await groupStore.getGroup(groupName.value.toUpperCase())
-	  monitorTypes.value = data
+	  await monitorStore.updateMonitor(monitorType.value.toUpperCase())
+	  const data = await monitorStore.getMonitor(monitorType.value.toUpperCase())
+	  monitorGroups.value = data
 	}
+  }
+
+
+  const handleRunMonitor = async () => {
+	await runMonitor(monitorType.value.toUpperCase())
+	await saveUrl()
   }
   
   // sprawdza czy item jest zaznaczony
@@ -82,8 +89,8 @@
   
   onMounted(saveUrl)
   
-  watch(() => route.params.groupName, async (newVal) => {
-	groupName.value = newVal
+  watch(() => route.params.monitorType, async (newVal) => {
+	monitorType.value = newVal
 	checkedItems.value.clear() // reset zaznaczeń przy zmianie grupy
 	await saveUrl()
   })
