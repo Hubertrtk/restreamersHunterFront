@@ -23,7 +23,15 @@ export const getUser = (email) => {
   }
 ]
    */
-export const assignUsers = (users) => {
+export const assignUsers = (users, description) => {
+	if(description){
+		users = users.map(user => {
+			return {
+				...user,
+				description
+			}
+		})
+	}
 	return axiosInstance.post(`/restreamershunter/assignUsers`, 
 		users
 	)

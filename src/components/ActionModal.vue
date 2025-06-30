@@ -3,7 +3,7 @@
 	  <div class="modal">
 		<div class="wrapper-modal">
 			<textarea class="textarea-users" v-model="usersToAction" rows="10" cols="50"></textarea>
-			<textarea class="textarea-description" v-model="formattedUser" rows="2" cols="50"></textarea>
+			<textarea class="textarea-description" v-model="description" rows="2" cols="50"></textarea>
 			<div class="select-wrapper">
 				<select v-model="selectedUserType" class="border p-2 rounded-md">
       				<option disabled value="">Wybierz opcję</option>
@@ -39,9 +39,10 @@
 
   const selectedUserType = ref('EMAIL')
   const usersToAction = ref('')
+  const description = ref('')
   const options = ['WMTID', 'EMAIL']
 
-  const formattedUser = computed(() => JSON.stringify(usersStore.users[popupStore.userPopup], null, 2))
+
   const selectedMonitors = ref([])
 
   function close() {
@@ -59,7 +60,7 @@
 
   const  assignUsers = async () => {
 	const data = converToAssignUsers(usersToAction.value.split(' '), selectedMonitors.value, selectedUserType.value)
-	await assignUsersApi(data)
+	await assignUsersApi(data, description.value)
 	groupStore.change()
 	monitorStore.change()
   }
